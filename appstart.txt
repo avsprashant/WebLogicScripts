@@ -1,0 +1,66 @@
+#!/bin/ksh
+
+#This script does
+# a) Starts all Domains and node managers in a host using 1st for loop
+# b) Starts all managed servers in every domain using 2nd for loop
+# (or) simply starts every managed server in a host
+
+if [ `whoami` != "webapp" ] ; then
+
+   echo "Command ($0) may only be executed by webapp"
+
+   exit 1
+
+fi
+
+for bin_dir in `ls -xd /users/domains/w*/bin` ; do
+
+  cd ${bin_dir} || continue
+
+  nohup ${bin_dir}/startWebLogic.sh &
+
+  nohup ${bin_dir}/startNodeManager.sh &
+
+  sleep 15
+
+done
+
+. /users/mwe/cgscripts/server_control_functions.sh
+
+
+#Get list of domains and start all managed servers in every domain etc.
+
+cd /users/domains
+
+typeset domains=`ls -xd w*`
+
+
+for dm in `echo $domains` ; do
+
+  status_admin_server ${dm} ${dm}_adm
+
+  echo 3
+
+  cd ${dm}/servers || continue
+
+  typeset servers=`ls -xd *`
+
+  for svr in `echo $servers` ; do
+
+     if [[ "$svr" != domain_bak && "$svr" != *_adm ]] ; then
+
+        echo ................ $dm $svr .................
+
+        start_mgd_server $dm $svr
+
+     else
+
+         continue
+
+     fi
+
+  done
+
+ cd ../..
+
+done

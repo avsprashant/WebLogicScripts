@@ -1,0 +1,7 @@
+
+#This is clocated at /users/mwe/cgscripts/py
+
+
+#wdx036322=x036322:8000
+
+wpx591384=x591384:8000

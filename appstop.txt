@@ -1,0 +1,48 @@
+#!/bin/ksh
+
+# This script stops all managed servers and then admin server in every domain
+# Simply stops all middleware services and Apps.
+
+if [ `whoami` != "webapp" ] ; then
+
+   echo "Command ($0) may only be executed by webapp"
+
+   exit 1
+
+fi
+
+# pkill -u webapp
+
+. /users/mwe/cgscripts/server_control_functions.sh
+
+cd /users/domains
+
+typeset domains=`ls -xd w*`
+
+for dm in `echo $domains` ; do
+
+ cd /users/domains/${dm}/servers || continue
+
+  typeset servers=`ls -xd *`
+
+  for svr in `echo $servers` ; do
+
+    if [[ "$svr" != domain_bak && "$svr" != *_adm ]] ; then
+
+         echo ................ $dm $svr .................
+
+         stop_mgd_server $dm $svr
+
+    else
+
+         continue
+
+    fi
+
+  done
+
+  stop_admin_server ${dm}
+
+  cd ../..
+
+done
