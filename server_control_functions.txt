@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-# We are defining start stop funcs. in python and 
+# We are defining start stop funcs. and 
 # later these funcs. will be called in appstart, appstop and appstatus scripts including wls-control.sh
 
 WLS_COMMON=/users/mwe/weblogic12c/wlserver/common/bin
